@@ -197,5 +197,555 @@
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
+   See the License for the specific language governing perm<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>Нейросфера | DeepSeek, Claude, Gemini и другие</title>
+  <!-- Подключаем шрифт Inter для современного вида -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 иконки -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(145deg, #0c0a1e 0%, #130f2b 100%);
+      min-height: 100vh;
+      color: #eae6ff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 1.5rem 1.2rem;
+      position: relative;
+    }
+
+    /* Декоративный фоновый элемент */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -20%;
+      left: -10%;
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(circle at 30% 30%, rgba(120, 80, 255, 0.15), transparent 60%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -15%;
+      right: -5%;
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(circle at 70% 80%, rgba(0, 200, 255, 0.1), transparent 60%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 1300px;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    /* Шапка */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      backdrop-filter: blur(12px);
+      background: rgba(20, 15, 40, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 3rem;
+      padding: 0.8rem 1.8rem;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #c084fc, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo i {
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-size: 2rem;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 2.5rem;
+      padding: 0.4rem 0.4rem 0.4rem 1.3rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      transition: all 0.25s;
+    }
+
+    .search-wrapper:focus-within {
+      border-color: #a78bfa;
+      box-shadow: 0 0 18px rgba(139, 92, 246, 0.4);
+    }
+
+    .search-wrapper input {
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1rem;
+      width: 200px;
+      outline: none;
+    }
+
+    .search-wrapper input::placeholder {
+      color: #a0a0c0;
+      font-weight: 400;
+    }
+
+    .search-btn {
+      background: #7c3aed;
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-left: 0.2rem;
+    }
+
+    .search-btn:hover {
+      background: #6d28d9;
+      box-shadow: 0 0 15px #a78bfa;
+    }
+
+    .subtitle {
+      font-size: 0.95rem;
+      color: #b9b3e0;
+      margin-top: 0.1rem;
+      font-weight: 400;
+    }
+
+    /* Сетка нейросетей */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.8rem;
+      margin-top: 0.3rem;
+    }
+
+    .card {
+      background: rgba(25, 20, 45, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 2rem;
+      padding: 1.8rem 1.5rem 1.5rem;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 10px 25px -8px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.15), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(168, 127, 255, 0.4);
+      box-shadow: 0 25px 35px -12px rgba(123, 67, 255, 0.4);
+    }
+
+    .card:hover::after {
+      opacity: 1;
+    }
+
+    .card-icon {
+      font-size: 3.2rem;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(135deg, #f0e6ff, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 6px 8px rgba(139, 92, 246, 0.5));
+      position: relative;
+      z-index: 2;
+    }
+
+    .card h3 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      background: linear-gradient(to right, #e9d5ff, #bfdbfe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.35rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card .company {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #a78bfa;
+      margin-bottom: 1rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card p {
+      color: #cac6e8;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 0.7rem 0 1.4rem;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.7rem 1.6rem;
+      border-radius: 2.5rem;
+      color: white;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: 0.25s;
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 2;
+      font-size: 0.9rem;
+      letter-spacing: 0.3px;
+    }
+
+    .btn i {
+      font-size: 0.8rem;
+      transition: transform 0.2s;
+    }
+
+    .btn:hover {
+      background: #7c3aed;
+      border-color: #a78bfa;
+      box-shadow: 0 0 18px #8b5cf6;
+      transform: scale(1.02);
+    }
+
+    .btn:hover i {
+      transform: translateX(4px);
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      text-align: center;
+      color: #6b658b;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      background: rgba(139, 92, 246, 0.2);
+      border-radius: 1rem;
+      padding: 0.15rem 0.8rem;
+      font-size: 0.7rem;
+      color: #d8b4fe;
+      margin-left: 0.3rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 550px) {
+      body {
+        padding: 1rem;
+      }
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        border-radius: 2rem;
+        padding: 1rem 1.2rem;
+      }
+      .search-wrapper input {
+        width: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div>
+        <div class="logo">
+          <i class="fas fa-brain"></i> Нейросфера
+        </div>
+        <div class="subtitle">единая вселенная AI</div>
+      </div>
+      <div class="search-wrapper">
+        <input type="text" placeholder="Поиск нейросети..." id="searchInput" autocomplete="off">
+        <button class="search-btn" id="searchButton"><i class="fas fa-search"></i></button>
+      </div>
+    </header>
+
+    <!-- Сетка с нейросетями: DeepSeek, Claude, Opus (как часть Claude), Gemini и многие другие -->
+    <div class="grid" id="aiGrid">
+      <!-- Карточки генерируются через JavaScript для удобства фильтрации, но структура определена -->
+    </div>
+
+    <div class="footer-note">
+      <i class="fas fa-robot"></i> DeepSeek · Claude · Gemini · GPT-4o · Mistral · Grok · Copilot и другие
+      <span class="badge">βeta</span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // Массив нейросетей – "дипсик, клауд, опус, джемени и многие другие"
+      const networks = [
+        {
+          id: 1,
+          name: "DeepSeek",
+          icon: "fa-solid fa-dragon",
+          company: "DeepSeek AI",
+          description: "Мощная языковая модель с открытым исходным кодом. Глубокое понимание контекста и кода.",
+          link: "#",
+          type: "deepseek"
+        },
+        {
+          id: 2,
+          name: "Claude 3.5",
+          icon: "fa-solid fa-feather-alt",
+          company: "Anthropic",
+          description: "Надёжный ассистент с акцентом на безопасность. Включает версию Opus для сложных задач.",
+          link: "#",
+          type: "claude"
+        },
+        {
+          id: 3,
+          name: "Claude Opus",
+          icon: "fa-solid fa-gem",
+          company: "Anthropic",
+          description: "Флагманская модель Claude: глубокая аналитика, креативность и работа с большими контекстами.",
+          link: "#",
+          type: "opus"
+        },
+        {
+          id: 4,
+          name: "Gemini",
+          icon: "fa-solid fa-star",
+          company: "Google DeepMind",
+          description: "Мультимодальная нейросеть Google. Понимает текст, изображения, код и аудио.",
+          link: "#",
+          type: "gemini"
+        },
+        {
+          id: 5,
+          name: "GPT-4o",
+          icon: "fa-solid fa-bolt",
+          company: "OpenAI",
+          description: "Универсальная мультимодальная модель. Быстрые ответы и работа с файлами.",
+          link: "#",
+          type: "gpt"
+        },
+        {
+          id: 6,
+          name: "Mistral Large",
+          icon: "fa-solid fa-wind",
+          company: "Mistral AI",
+          description: "Европейская LLM с высокой производительностью и поддержкой многих языков.",
+          link: "#",
+          type: "mistral"
+        },
+        {
+          id: 7,
+          name: "Grok",
+          icon: "fa-solid fa-rocket",
+          company: "xAI (Elon Musk)",
+          description: "Остроумный ИИ с доступом к реальному времени через X (Twitter).",
+          link: "#",
+          type: "grok"
+        },
+        {
+          id: 8,
+          name: "Copilot",
+          icon: "fa-solid fa-code",
+          company: "Microsoft",
+          description: "Интеллектуальный помощник для разработки и офисных задач на базе GPT.",
+          link: "#",
+          type: "copilot"
+        },
+        {
+          id: 9,
+          name: "Perplexity",
+          icon: "fa-solid fa-magnifying-glass",
+          company: "Perplexity AI",
+          description: "Поисковая нейросеть с глубоким исследованием и цитированием источников.",
+          link: "#",
+          type: "perplexity"
+        },
+        {
+          id: 10,
+          name: "Llama 3",
+          icon: "fa-solid fa-feather",
+          company: "Meta",
+          description: "Открытая модель от Meta. Гибкая, доступная для локального запуска.",
+          link: "#",
+          type: "llama"
+        }
+      ];
+
+      const grid = document.getElementById('aiGrid');
+      const searchInput = document.getElementById('searchInput');
+      const searchButton = document.getElementById('searchButton');
+
+      // Функция рендера карточек
+      function renderCards(filterText = '') {
+        if (!grid) return;
+        const lowerFilter = filterText.trim().toLowerCase();
+        
+        const filtered = networks.filter(item => {
+          if (lowerFilter === '') return true;
+          return item.name.toLowerCase().includes(lowerFilter) ||
+                 item.company.toLowerCase().includes(lowerFilter) ||
+                 item.type.toLowerCase().includes(lowerFilter) ||
+                 item.description.toLowerCase().includes(lowerFilter);
+        });
+
+        grid.innerHTML = '';
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem; color:#a094c6; backdrop-filter:blur(8px); background:rgba(20,15,40,0.4); border-radius:2rem;">
+            <i class="fas fa-ghost" style="font-size:2.5rem; margin-bottom:0.8rem; display:block; opacity:0.7;"></i>
+            Нейросети не найдены. Попробуйте другой запрос.
+          </div>`;
+          return;
+        }
+
+        filtered.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          
+          // Специальная иконка для DeepSeek, Claude Opus и Gemini подчеркнута
+          card.innerHTML = `
+            <div class="card-icon"><i class="${item.icon}"></i></div>
+            <h3>${item.name}</h3>
+            <div class="company">${item.company}</div>
+            <p>${item.description}</p>
+            <a href="${item.link}" class="btn" target="_blank" rel="noopener">
+              Открыть <i class="fas fa-arrow-right"></i>
+            </a>
+          `;
+          
+          // Добавляем data-атрибуты для возможной кастомизации
+          card.dataset.type = item.type;
+          grid.appendChild(card);
+        });
+      }
+
+      // Инициализация
+      renderCards();
+
+      // Обработчик поиска
+      function handleSearch() {
+        const value = searchInput ? searchInput.value : '';
+        renderCards(value);
+      }
+
+      if (searchButton) {
+        searchButton.addEventListener('click', handleSearch);
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('keyup', (e) => {
+          if (e.key === 'Enter') {
+            handleSearch();
+          }
+          // Опционально живой поиск при вводе (можно раскомментировать для интерактивности)
+          // handleSearch();
+        });
+        
+        // Живой поиск при вводе (динамическая фильтрация)
+        searchInput.addEventListener('input', () => {
+          handleSearch();
+        });
+      }
+
+      // Добавляем плавное появление при наведении (уже в CSS), но также добавим маленькую деталь:
+      // Клик по логотипу сбрасывает поиск
+      const logoElement = document.querySelector('.logo');
+      if (logoElement) {
+        logoElement.addEventListener('click', () => {
+          if (searchInput) {
+            searchInput.value = '';
+            renderCards('');
+          }
+        });
+        logoElement.style.cursor = 'pointer';
+      }
+
+      // Отключаем стандартное поведение ссылок (заглушка), чтобы не уходили со страницы
+      grid.addEventListener('click', (e) => {
+        const link = e.target.closest('a');
+        if (link && link.getAttribute('href') === '#') {
+          e.preventDefault();
+          // Можно показать уведомление, что это демо
+          const cardName = link.closest('.card')?.querySelector('h3')?.innerText || 'Нейросеть';
+          alert(`🎯 Демо-режим: ${cardName} будет доступна в полной версии Нейросферы.`);
+        }
+      });
+
+    })();
+  </script>
+</body>
+</html>issions and
    limitations under the License.https://github.com/new
